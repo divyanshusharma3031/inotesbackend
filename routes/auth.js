@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "Divyanshuisagoodb$oy";
 const fetchuser=require("../middleware/fetchuser") 
-let success=false;
+
 //secret signature.
 //json webtoken tab use hoga jab user ne login karliya ho aur ab hame server se koi credential info provide karni ho to user dubara login kare to user experience kharab hoga to use ham ek authentication token provide kardete hai
 // secure communication establish karwayga jwt
@@ -62,6 +62,7 @@ router.post(
   "/login",
   [body("email").isEmail(), body("password").isLength({ min: 8 })],
   async (req, res) => {
+    let success=false;
     const errors = validationResult(req);
     // ye ek array return karega errors ki
     if (!errors.isEmpty()) {
@@ -71,12 +72,14 @@ router.post(
     let email = req.body.email;
     let user = await User.findOne({ email: email });
     if (!user) {
+      console.log(success);
       console.log(user);
       return res.status(400).json({success,error:"Invalid credentials"});
     }
     let password = req.body.password;
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
+      console.log(success);
       console.log(password);
       return res.status(400).json({success,error:"Invalid credentials"});
     }
